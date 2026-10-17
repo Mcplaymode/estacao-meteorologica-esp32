@@ -1,0 +1,446 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap');
+
+/* ===== RESET ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+    scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    display: none;
+}
+
+body {
+    position: relative;
+    isolation: isolate;
+    min-height: 100vh;
+    font-family: 'DM Sans', sans-serif;
+    color: #fff;
+    background: #10182c;
+
+    --weather-image: url("https://images.unsplash.com/photo-1706381778245-7fd5305c18b3?w=1600&h=900&fit=crop&auto=format");
+
+    --weather-overlay: linear-gradient(
+        160deg,
+        rgba(10, 30, 80, 0.45),
+        rgba(0, 0, 0, 0.30)
+    );
+
+    --weather-animation: kb-zoom-in;
+}
+
+/* ===== FUNDO DINÂMICO ===== */
+body::before {
+    content: "";
+    position: fixed;
+    inset: -2%;
+    z-index: -2;
+
+    background-image: var(--weather-image);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    animation: var(--weather-animation) 30s ease-in-out infinite alternate;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+
+    background: var(--weather-overlay);
+    pointer-events: none;
+}
+
+body.bg-changing::before {
+    animation:
+        bg-fade-in 1.2s ease-out both,
+        var(--weather-animation) 30s ease-in-out 1.2s infinite alternate;
+}
+
+/* ===== ESTRUTURA PRINCIPAL ===== */
+.main {
+    position: relative;
+    isolation: isolate;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 35px 24px 20px;
+}
+
+/* ===== CABEÇALHO ===== */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+.header-content h4,
+.header-calendar h4 {
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 2px;
+}
+
+.header-content h4 {
+    margin-bottom: 10px;
+    opacity: 0.8;
+}
+
+.header-content h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(3rem, 8vw, 5rem);
+    font-weight: 300;
+}
+
+.header-calendar {
+    text-align: right;
+}
+
+.header-calendar h2 {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(1.2rem, 3vw, 2rem);
+    font-weight: 400;
+    margin-bottom: 8px;
+}
+
+.header-calendar h4 {
+    letter-spacing: 0;
+    font-weight: 400;
+    opacity: 0.8;
+}
+
+/* ===== STATUS DA CONEXÃO ===== */
+.status {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+}
+
+#indicador-status {
+    flex-shrink: 0;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #facc15;
+    animation: pulse-slow 2s infinite;
+}
+
+/* Estados do MQTT */
+#status-mqtt[data-state="connected"] #indicador-status {
+    background: #48c78e;
+}
+
+#status-mqtt[data-state="connecting"] #indicador-status {
+    background: #facc15;
+}
+
+#status-mqtt[data-state="disconnected"] #indicador-status {
+    background: #ff6b6b;
+}
+
+/* ===== CARTÕES METEOROLÓGICOS ===== */
+.content {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.content-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+    min-width: 0;
+    padding: 24px 20px;
+
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 20px;
+
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+
+    transition: background 0.3s ease, transform 0.2s ease;
+    animation: fadeIn 0.6s ease-out both;
+}
+
+.content-item:nth-child(2) {
+    animation-delay: 0.08s;
+}
+
+.content-item:nth-child(3) {
+    animation-delay: 0.16s;
+}
+
+.content-item:nth-child(4) {
+    animation-delay: 0.24s;
+}
+
+.content-item:hover {
+    background: rgba(255, 255, 255, 0.17);
+    transform: translateY(-3px);
+}
+
+.content-item h4 {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    opacity: 0.75;
+}
+
+.content-item h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    font-weight: 400;
+    overflow-wrap: anywhere;
+}
+
+/* ===== HISTÓRICO ===== */
+.table {
+    max-width: 952px;
+    margin: 10px auto 24px;
+    padding: 24px;
+
+    color: white;
+    background: rgba(255, 255, 255, 0.09);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 20px;
+
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.table h3 {
+    margin-bottom: 20px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 400;
+}
+
+.table-header,
+.table-row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+}
+
+.table-header {
+    padding: 12px 4px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    opacity: 0.7;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.table-row {
+    padding: 14px 4px;
+    font-size: 0.9rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.table-row:last-child {
+    border-bottom: none;
+}
+
+/* ===== BOTÃO ATUALIZAR ===== */
+.update {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin: 25px auto;
+    text-align: center;
+}
+
+#botao-atualizar {
+    padding: 12px 22px;
+    color: white;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 30px;
+
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+#botao-atualizar:hover {
+    background: rgba(255, 255, 255, 0.22);
+}
+
+#botao-atualizar:active {
+    transform: scale(0.96);
+}
+
+#ultima-atualizacao {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    opacity: 0.65;
+}
+
+/* ===== RODAPÉ ===== */
+footer {
+    padding: 20px;
+    text-align: center;
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+footer a {
+    color: white;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+footer a:hover {
+    opacity: 0.8;
+}
+
+/* ===== ANIMAÇÕES ===== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bg-fade-in {
+    from {
+        opacity: 0.25;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes pulse-slow {
+    0%, 100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.35;
+    }
+}
+
+@keyframes kb-zoom-in {
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(1.12);
+    }
+}
+
+@keyframes kb-zoom-out {
+    0% {
+        transform: scale(1.12);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes kb-pan-right {
+    0% {
+        transform: scale(1.1) translateX(-2%);
+    }
+
+    100% {
+        transform: scale(1.1) translateX(2%);
+    }
+}
+
+@keyframes kb-pan-left {
+    0% {
+        transform: scale(1.1) translateX(2%);
+    }
+
+    100% {
+        transform: scale(1.1) translateX(-2%);
+    }
+}
+
+/* ===== ACESSIBILIDADE ===== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ===== CELULARES ===== */
+@media (max-width: 600px) {
+    .main {
+        padding: 25px 14px 16px;
+    }
+
+    header {
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .header-calendar {
+        text-align: left;
+    }
+
+    .content {
+        gap: 10px;
+    }
+
+    .content-item {
+        padding: 18px 14px;
+        gap: 12px;
+        border-radius: 16px;
+    }
+
+    .content-item h4 {
+        font-size: 0.68rem;
+        letter-spacing: 1px;
+    }
+
+    .table {
+        margin: 10px 14px 24px;
+        padding: 16px 10px;
+    }
+
+    .table-header,
+    .table-row {
+        gap: 4px;
+    }
+
+    .table-row {
+        font-size: 0.8rem;
+    }
+}
