@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Estação Meteorológica</title>
+
+    <link rel="stylesheet" href="meteorologia.css">
+    <script src="meteorologia.js" defer></script>
+</head>
+
+<body>
+
+    <div class="main">
+
+        <!-- Cabeçalho -->
+        <header>
+            <div class="header-content">
+                <h4>ESTAÇÃO METEOROLÓGICA</h4>
+                <h2 id="temperatura-principal">27°C</h2>
+            </div>
+
+            <div class="header-calendar">
+                <h2 id="relogio">00:00:00</h2>
+                <h4 id="data-atual">Carregando data...</h4>
+            </div>
+        </header>
+
+        <!-- Indicador de conexão -->
+        <div class="status" id="status-mqtt" data-state="disconnected">
+            <span id="indicador-status"></span>
+            <span id="texto-status">MQTT não configurado</span>
+        </div>
+
+        <!-- Cartões meteorológicos -->
+        <div class="content">
+
+            <div class="content-item">
+                <h4>Temperatura</h4>
+                <h2 id="temperatura">27°C</h2>
+            </div>
+
+            <div class="content-item">
+                <h4>Umidade</h4>
+                <h2 id="umidade">60%</h2>
+            </div>
+
+            <div class="content-item">
+                <h4>Luminosidade</h4>
+                <h2 id="luminosidade">88.7k lux</h2>
+            </div>
+
+            <div class="content-item">
+                <h4>Índice UV</h4>
+                <h2 id="indice-uv">3</h2>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Histórico meteorológico -->
+    <section class="table">
+
+        <h3>Histórico dos últimos 7 dias</h3>
+
+        <div class="table-header">
+            <div>Dia</div>
+            <div>Média</div>
+            <div>Min.</div>
+            <div>Max.</div>
+        </div>
+
+        <div class="table-row">
+            <div>Seg</div>
+            <div>26°C</div>
+            <div>22°C</div>
+            <div>31°C</div>
+        </div>
+
+        <div class="table-row">
+            <div>Ter</div>
+            <div>26°C</div>
+            <div>22°C</div>
+            <div>31°C</div>
+        </div>
+
+        <div class="table-row">
+            <div>Qua</div>
+            <div>27°C</div>
+            <div>22°C</div>
+            <div>31°C</div>
+        </div>
+
+        <div class="table-row">
+            <div>Qui</div>
+            <div>27°C</div>
+            <div>22°C</div>
+            <div>31°C</div>
+        </div>
+
+        <div class="table-row">
+            <div>Sex</div>
+            <div>27°C</div>
+            <div>22°C</div>
+            <div>31°C</div>
+        </div>
+
+        <div class="table-row">
+            <div>Sáb</div>
+            <div>27°C</div>
+            <div>22°C</div>
+            <div>31°C</div>
+        </div>
+
+        <div class="table-row">
+            <div>Dom</div>
+            <div>27°C</div>
+            <div>22°C</div>
+            <div>31°C</div>
+        </div>
+
+    </section>
+
+    <!-- Atualização -->
+    <div class="update">
+        <button id="botao-atualizar" type="button">
+            Atualizar agora
+        </button>
+        <p id="ultima-atualizacao"></p>
+    </div>
+
+    <!-- Rodapé -->
+    <footer>
+        <p>
+            Desenvolvido por
+            <a href="https://github.com/seu-usuario" target="_blank" rel="noopener noreferrer">
+                GRUPO
+            </a>
+        </p>
+    </footer>
+
+</body>
+
+</html>
