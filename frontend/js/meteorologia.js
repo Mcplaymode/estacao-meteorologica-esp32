@@ -140,7 +140,6 @@ atualizarStatusMQTT(
 function atualizarMedicoes() {
     const temperatura = (25 + Math.random() * 5).toFixed(1);
     const umidade = Math.round(50 + Math.random() * 35);
-    const luminosidade = Math.round(Math.random() * 100000);
     const indiceUV = Math.round(Math.random() * 11);
 
     document.getElementById("temperatura-principal").textContent =
@@ -151,9 +150,6 @@ function atualizarMedicoes() {
 
     document.getElementById("umidade").textContent =
         `${umidade}%`;
-
-    document.getElementById("luminosidade").textContent =
-        `${(luminosidade / 1000).toFixed(1)}k lux`;
 
     document.getElementById("indice-uv").textContent =
         indiceUV;
